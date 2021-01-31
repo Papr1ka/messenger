@@ -11,7 +11,7 @@ class Server(Socket):
         self.hello_message = "Welcome to Messanger, you see the last 100 posts\n".encode('utf-8')
 
     def set_up(self):
-        self.socket.bind(("0.0.0.0", 5565))
+        self.socket.bind(("52.211.177.11", 5565))
         print(self.getName())
         self.socket.listen()
         self.socket.setblocking(False)
