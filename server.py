@@ -6,7 +6,8 @@ class Server(Socket):
         super(Server, self).__init__()
         print("the server is listening")
         self.users = []
-        self.last_messages = [] #limit = 100
+        self.last_messages = []
+        self.limit = 50
 
     def set_up(self):
         self.socket.bind(("127.0.0.1", 5565))
@@ -18,14 +19,23 @@ class Server(Socket):
         if not listened_socked:
             return
         while True:
-            data = await self.mainloop.sock_recv(listened_socked, self.packages)
-            print(f"user send {data}")
-            await self.send_data(data)
-    
-    async def send_data(self, data):
-        if len(self.last_messages) > 100:
+            try:
+                data = await self.mainloop.sock_recv(listened_socked, self.packages)
+                await self.logging(data)
+                print(f"user send {data}")
+                await self.send_data(data)
+            except ConnectionResetError:
+                print("User disconnect")
+                self.users.remove(listened_socked)
+                return
+
+
+    async def logging(self, data):
+        if len(self.last_messages) >= self.limit:
             self.last_messages.remove(self.last_messages[0])
         self.last_messages.append(data)
+
+    async def send_data(self, data):
         for user in self.users:
             await self.mainloop.sock_sendall(user, data)
     
@@ -34,6 +44,9 @@ class Server(Socket):
             user_socket, adress = await self.mainloop.sock_accept(self.socket)
             print(f"User {adress} connected")
             self.users.append(user_socket)
+            for i in self.last_messages:
+                await self.mainloop.sock_sendall(user_socket, i)
+            print(f"send last messages : {len(self.last_messages)}")
             self.mainloop.create_task(self.listen_socket(user_socket))
 
     async def main(self):
