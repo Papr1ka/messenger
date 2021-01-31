@@ -8,9 +8,11 @@ class Server(Socket):
         self.users = []
         self.last_messages = []
         self.limit = 50
+        self.hello_message = "Welcome to Messanger, you see the last 100 posts\n".encode('utf-8')
 
     def set_up(self):
-        self.socket.bind(("127.0.0.1", 5565))
+        self.socket.bind(("0.0.0.0", 5565))
+        print(self.getName())
         self.socket.listen()
         self.socket.setblocking(False)
         self.socket.settimeout(0)
@@ -44,6 +46,7 @@ class Server(Socket):
             user_socket, adress = await self.mainloop.sock_accept(self.socket)
             print(f"User {adress} connected")
             self.users.append(user_socket)
+            await self.mainloop.sock_sendall(user_socket, self.hello_message)
             for i in self.last_messages:
                 await self.mainloop.sock_sendall(user_socket, i)
             print(f"send last messages : {len(self.last_messages)}")

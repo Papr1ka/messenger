@@ -1,0 +1,7 @@
+asyncio
+aiohttp
+websockets
+chardet
+datetime
+PyNaCl
+requests
