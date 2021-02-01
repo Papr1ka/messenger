@@ -1,6 +1,6 @@
 from Socket import Socket
 import asyncio
-from socket import gethostname
+from socket import gethostname, gethostbyname
 
 class Server(Socket):
     def __init__(self):
@@ -12,8 +12,8 @@ class Server(Socket):
         self.hello_message = "Welcome to Messanger, you see the last 100 posts\n".encode('utf-8')
 
     def set_up(self):
-        self.socket.bind((gethostname(), 5565))
-        print(self.getName())
+        self.socket.bind((gethostbyname(gethostname()), 5565))
+        print(gethostbyname(gethostname()))
         self.socket.listen()
         self.socket.setblocking(False)
         self.socket.settimeout(0)
