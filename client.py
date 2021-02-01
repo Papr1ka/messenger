@@ -38,7 +38,7 @@ class Client(Socket):
                 return
 
 
-            #system("cls")
+            system("cls")
             self.messages += data.decode('utf-8')
             print(self.messages)
 
@@ -62,12 +62,6 @@ class Client(Socket):
         if 1 < len(self.name) < 13:
             data = f"Sc_adress{self.name}".encode('utf-8')
             self.socket.send(data)
-            response = self.socket.recv(self.packages)
-            print(f"response is {response}")
-            if response == "такой ник уже существует":
-                print("существует")
-                self.login()
-            print("вы авторизировались")
         else:
             print("Your neme is must be 2 to 12 symbols")
             self.login()
