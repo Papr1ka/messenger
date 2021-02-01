@@ -2,6 +2,7 @@ from Socket import Socket
 import asyncio
 from datetime import datetime
 from os import system
+from socket import gethostbyname
 
 
 class Client(Socket):
@@ -12,7 +13,7 @@ class Client(Socket):
 
     def set_up(self):
         try:
-            self.socket.connect(("192.168.0.118", 5565))
+            self.socket.connect(("192.168.0.118", 9999))
         except ConnectionRefusedError:
             print("сервер недоступен")
             ans = str(input("подключиться заново? Y/N "))
@@ -30,11 +31,14 @@ class Client(Socket):
         while True:
             try:
                 data = await self.mainloop.sock_recv(self.socket, self.packages if self.load else self.packages * 50)
+                print(data.decode("utf-8"))
                 self.load = True
             except ConnectionResetError:
                 print("You are disconnected")
                 return
-            system("cls")
+
+
+            #system("cls")
             self.messages += data.decode('utf-8')
             print(self.messages)
 
@@ -42,9 +46,12 @@ class Client(Socket):
         while True:
             data = await self.mainloop.run_in_executor(None, input)
             if data != "":
-                data = f"{datetime.now().strftime('%H:%M')} | {self.name} | {data}\n"
-                await self.mainloop.sock_sendall(self.socket, data.encode("utf-8"))
-    
+                if data == "clear":
+                    self.messages = ""
+                    system("cls")
+                else:
+                    await self.mainloop.sock_sendall(self.socket, data.encode("utf-8"))
+
     async def main(self):
         listening_task = self.mainloop.create_task(self.listen_socket())
         sending_task = self.mainloop.create_task(self.send_data())
@@ -53,7 +60,14 @@ class Client(Socket):
     def login(self):
         self.name = input("Your Nick: ")
         if 1 < len(self.name) < 13:
-            self.name = " " * ((12 - len(self.name)) // 2) + self.name + " " * (12 - len(self.name) - (12 - len(self.name)) // 2)
+            data = f"Sc_adress{self.name}".encode('utf-8')
+            self.socket.send(data)
+            response = self.socket.recv(self.packages)
+            print(f"response is {response}")
+            if response == "такой ник уже существует":
+                print("существует")
+                self.login()
+            print("вы авторизировались")
         else:
             print("Your neme is must be 2 to 12 symbols")
             self.login()
