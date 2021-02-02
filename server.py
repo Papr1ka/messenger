@@ -44,22 +44,25 @@ class Server(Socket):
                         self.users.remove(listened_socked)
                         return
                 else:
-                    msg = Message(data, self.nicks[listened_socked])
-                    if 'sex:1' in data.decode('utf-8'):
-                        msg = msg.sexy(1)
-                    elif 'sex:2' in data.decode('utf-8'):
-                        msg = msg.sexy(2)
-                    elif 'sex:3' in data.decode('utf-8'):
-                        msg = msg.sexy(3)
-                    elif 'sex:4' in data.decode('utf-8'):
-                        msg = msg.sexy(4)
-                    elif 'miha' in data.decode('utf-8'):
-                        msg = msg.sexy(5)
-                    else:
-                        msg = msg.getPretty()
-                    await self.logging(msg)
-                    print(f"user send {msg}")
-                    await self.send_data(msg.encode('utf-8'))
+                    try:
+                        msg = Message(data, self.nicks[listened_socked])
+                        if 'sex:1' in data.decode('utf-8'):
+                            msg = msg.sexy(1)
+                        elif 'sex:2' in data.decode('utf-8'):
+                            msg = msg.sexy(2)
+                        elif 'sex:3' in data.decode('utf-8'):
+                            msg = msg.sexy(3)
+                        elif 'sex:4' in data.decode('utf-8'):
+                            msg = msg.sexy(4)
+                        elif 'miha' in data.decode('utf-8'):
+                            msg = msg.sexy(5)
+                        else:
+                            msg = msg.getPretty()
+                        await self.logging(msg)
+                        print(f"user send {msg}")
+                        await self.send_data(msg.encode('utf-8'))
+                    except KeyError:
+                        print("not user message")
             except ConnectionResetError:
                 print("User disconnect")
                 self.users.remove(listened_socked)
