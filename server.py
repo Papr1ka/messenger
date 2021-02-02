@@ -5,7 +5,7 @@ import socket
 import os
 
 sock = socket.socket()
-sock.bind(('0.0.0.0', 8000))
+sock.bind(('0.0.0.0', int(os.environ.get("PORT"))))
 sock.listen(0)
 conn, addr = sock.accept()
 
