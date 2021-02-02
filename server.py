@@ -47,7 +47,7 @@ class Server(Socket):
                     try:
                         msg = Message(data, self.nicks[listened_socked])
                     except KeyError:
-                        msg = Message(data, "")
+                        raise ConnectionAbortedError
                     if 'sex:1' in data.decode('utf-8'):
                         msg = msg.pic(1)
                     elif 'sex:2' in data.decode('utf-8'):
@@ -77,6 +77,8 @@ class Server(Socket):
                 except:
                     pass
                 return
+            except ConnectionAbortedError:
+                return
 
     async def logging(self, data):
         if len(self.last_messages) >= self.limit:
@@ -87,9 +89,9 @@ class Server(Socket):
         for user in self.users:
             try:
                 await self.mainloop.sock_sendall(user, data)
-            except BrokenPipeError:
+            except: #BrokenPipeError
                 self.users.remove(user)
-    
+
     async def accept_sockets(self):
         while True:
             user_socket, adress = await self.mainloop.sock_accept(self.socket)
