@@ -28,6 +28,3 @@ class Socket():
 
     def set_up(self):
         raise NotImplementedError()
-
-    def randomize_port(self):
-        pass
