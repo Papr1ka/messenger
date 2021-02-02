@@ -16,7 +16,7 @@ class Server(Socket):
         self.hello_message = "Welcome to Messanger, you see the last 100 posts\n".encode('utf-8')
 
     def set_up(self):
-        self.socket.bind(("0.0.0.0", 9999))
+        self.socket.bind((self.last_ip, self.last_port))
         print(gethostbyname(gethostname()))
         self.socket.listen()
         self.socket.setblocking(False)
@@ -63,7 +63,10 @@ class Server(Socket):
             except ConnectionResetError:
                 print("User disconnect")
                 self.users.remove(listened_socked)
-                mesg = Message(" has leaved the chat".encode('utf-8'), self.nicks[listened_socked]).getPretty()
+                try:
+                    mesg = Message(" has leaved the chat".encode('utf-8'), self.nicks[listened_socked]).getPretty()
+                except KeyError:
+                    pass
                 await self.send_data(mesg.encode('utf-8'))
                 await self.logging(mesg)
                 try:

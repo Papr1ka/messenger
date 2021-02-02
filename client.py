@@ -13,7 +13,7 @@ class Client(Socket):
 
     def set_up(self):
         try:
-            self.socket.connect(("192.168.0.118", 9999))
+            self.socket.connect((self.last_ip, self.last_port))
         except ConnectionRefusedError:
             print("сервер недоступен")
             ans = str(input("подключиться заново? Y/N "))

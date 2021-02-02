@@ -10,6 +10,8 @@ class Socket():
         )
         self.packages = 16192
         self.mainloop = asyncio.get_event_loop()
+        self.last_ip = "0.0.0.0" #socket.gethostbyname(socket.gethostname())
+        self.last_port = 8080
     
     async def send_data(self, data):
         raise NotImplementedError()
@@ -25,3 +27,6 @@ class Socket():
 
     def set_up(self):
         raise NotImplementedError()
+
+    def randomize_port(self):
+        pass
