@@ -85,7 +85,10 @@ class Server(Socket):
 
     async def send_data(self, data):
         for user in self.users:
-            await self.mainloop.sock_sendall(user, data)
+            try:
+                await self.mainloop.sock_sendall(user, data)
+            except BrokenPipeError:
+                self.users.remove(user)
     
     async def accept_sockets(self):
         while True:

@@ -11,8 +11,8 @@ class Socket():
         )
         self.packages = 16192
         self.mainloop = asyncio.get_event_loop()
-        self.last_ip = "0.0.0.0" #socket.gethostbyname(socket.gethostname())
-        self.last_port = int(os.environ.get("PORT"))
+        self.last_ip = "bottos6.herokuapp.com" #socket.gethostbyname(socket.gethostname())
+        self.last_port = 80#int(os.environ.get("PORT"))
         print(self.last_port)
     
     async def send_data(self, data):
