@@ -6,7 +6,7 @@ import os
 
 sock = socket.socket()
 sock.bind(('0.0.0.0', int(os.environ.get("PORT"))))
-sock.listen(0)
+sock.listen()
 
 while True:
     try:
