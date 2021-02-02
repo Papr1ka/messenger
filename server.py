@@ -7,16 +7,14 @@ import os
 sock = socket.socket()
 sock.bind(('0.0.0.0', int(os.environ.get("PORT"))))
 sock.listen(0)
-conn, addr = sock.accept()
-
-print('connected:', addr)
 
 while True:
     try:
+    	conn, addr = sock.accept()
+    	print('connected:', addr)
     	data = conn.recv(1024)
     	if not data:
     		break
     	conn.send(data.upper())
     except ConnectionResetError:
     	print("отключился")
-conn.close()
